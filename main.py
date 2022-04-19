@@ -1,7 +1,6 @@
 """ Twitter bot that posts the moonrise and moonset times for the day """
 
 import os
-from time import strftime
 import requests
 import tweepy
 from datetime import datetime

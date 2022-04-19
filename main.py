@@ -5,7 +5,8 @@ import requests
 import tweepy
 from datetime import datetime
 from dotenv import load_dotenv
-load_dotenv()  # load the environment variables
+load_dotenv()  # load environment variables
+
 
 class Bot():
     """ Setup a twitter bot """
@@ -28,6 +29,7 @@ class Bot():
     def send_tweet(self, message: str) -> tweepy.Response:
         """ Send a tweet with the given message """
         return self.client.create_tweet(text=message)
+
 
 def main():
     # Initialize bot
@@ -53,5 +55,6 @@ def main():
 
     print(f"Tweet sent out: https://twitter.com/MoonTimesBot/status/{tweet.data['id']}")
 
-if __name__== "__main__":
+
+if __name__ == "__main__":
     main()

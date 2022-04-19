@@ -20,7 +20,8 @@ class Bot():
             consumer_key=self.consumer_key,
             consumer_secret=self.consumer_secret,
             access_token=self.access_token,
-            access_token_secret=self.access_token_secret
+            access_token_secret=self.access_token_secret,
+            return_type=tweepy.Response
         )
 
     def astronomy_api_call(self) -> requests.Response:

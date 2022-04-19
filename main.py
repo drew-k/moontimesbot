@@ -15,7 +15,7 @@ class Bot():
         self.consumer_secret = os.environ.get("CONSUMER_SECRET")
         self.access_token = os.environ.get("ACCESS_TOKEN")
         self.access_token_secret = os.environ.get("ACCESS_TOKEN_SECRET")
-        self.api_key = os.environ.get("API_KEY")
+        self.api_key = os.environ.get("ASTRONOMY_API_KEY")
         self.client = tweepy.Client(
             consumer_key=self.consumer_key,
             consumer_secret=self.consumer_secret,
@@ -37,7 +37,6 @@ def main():
 
     # Call the astronomy api
     api_response = bot.astronomy_api_call().json()  # Get the response in .json format
-    print(api_response["moon_status"])
 
     # Get the moonrise time
     unformmated = datetime.strptime(api_response["moonrise"], "%H:%M")  # get datetime object
@@ -47,13 +46,16 @@ def main():
     unformmated = datetime.strptime(api_response["moonset"], "%H:%M")  # get datetime object
     moonset = unformmated.strftime("%I:%M %p")  # convert to 12-hour
 
-    # Send out the tweet
-    if api_response["moon_status"] == "-":
-        tweet = bot.send_tweet(f"The moon will set at {moonset} and rise at {moonrise} today in New York (EST).")  # normal operation
-    else:
-        tweet = bot.send_tweet(f"The moon is {api_response['moon_status'].lower()} today.")  # if the moon is always up or always set within the day
+    try:
+        # Send out the tweet
+        if api_response["moon_status"] == "-":
+            tweet = bot.send_tweet(f"The moon will set at {moonset} and rise at {moonrise} today in New York (EST).")  # normal operation
+        else:
+            tweet = bot.send_tweet(f"The moon is {api_response['moon_status'].lower()} today.")  # if the moon is always up or always set within the day
 
-    print(f"Tweet sent out: https://twitter.com/MoonTimesBot/status/{tweet.data['id']}")
+        print(f"Tweet sent out: https://twitter.com/MoonTimesBot/status/{tweet.data['id']}")
+    except tweepy.errors.Forbidden as exception:
+        print(f"{exception} raised.")
 
 
 if __name__ == "__main__":

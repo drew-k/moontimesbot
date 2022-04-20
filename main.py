@@ -42,15 +42,25 @@ def main():
     try:
         # Send out the tweet
         if api_response["moon_status"] == "-":
+            if api_response["moonrise"] != "-:-" and api_response["moonset"] == "-:-":
+                # Get the moonrise time
+                unformmated = datetime.strptime(api_response["moonrise"], "%H:%M")  # get datetime object
+                moonrise = unformmated.strftime("%I:%M %p")  # convert to 12-hour
+                tweet = bot.send_tweet(f"The moon will rise at {moonrise} and not set today in New York (EST).")
+            elif api_response["moonrise"] == "-:-" and api_response["moonset"] != "-:-":
+                # Get the moonset time
+                unformmated = datetime.strptime(api_response["moonset"], "%H:%M")  # get datetime object
+                moonset = unformmated.strftime("%I:%M %p")  # convert to 12-hour
+                tweet = bot.send_tweet(f"The moon will set at {moonset} and not rise today in New York (EST).")
+            else:
+                tweet = bot.send_tweet(f"The moon will set at {moonset} and rise at {moonrise} today in New York (EST).")  # normal operation
+        else:
             # Get the moonrise time
             unformmated = datetime.strptime(api_response["moonrise"], "%H:%M")  # get datetime object
             moonrise = unformmated.strftime("%I:%M %p")  # convert to 12-hour
-
             # Get the moonset time
             unformmated = datetime.strptime(api_response["moonset"], "%H:%M")  # get datetime object
             moonset = unformmated.strftime("%I:%M %p")  # convert to 12-hour
-            tweet = bot.send_tweet(f"The moon will set at {moonset} and rise at {moonrise} today in New York (EST).")  # normal operation
-        else:
             tweet = bot.send_tweet(f"The moon is {api_response['moon_status'].lower()} today.")  # if the moon is always up or always set within the day
 
         print(f"Tweet sent out: https://twitter.com/MoonTimesBot/status/{tweet.data['id']}")

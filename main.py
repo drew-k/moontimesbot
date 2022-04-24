@@ -46,14 +46,24 @@ def main():
                 # Get the moonrise time
                 unformmated = datetime.strptime(api_response["moonrise"], "%H:%M")  # get datetime object
                 moonrise = unformmated.strftime("%I:%M %p")  # convert to 12-hour
-                tweet = bot.send_tweet(f"The moon will rise at {moonrise} and not set today in New York (EST).")
+                tweet = bot.send_tweet(f"The moon will rise at {moonrise} and not set today in Fort Myers, Florida (EST).")
             elif api_response["moonrise"] == "-:-" and api_response["moonset"] != "-:-":
                 # Get the moonset time
                 unformmated = datetime.strptime(api_response["moonset"], "%H:%M")  # get datetime object
                 moonset = unformmated.strftime("%I:%M %p")  # convert to 12-hour
-                tweet = bot.send_tweet(f"The moon will set at {moonset} and not rise today in New York (EST).")
+                tweet = bot.send_tweet(f"The moon will set at {moonset} and not rise today in Fort Myers, Florida (EST).")
             else:
-                tweet = bot.send_tweet(f"The moon will set at {moonset} and rise at {moonrise} today in New York (EST).")  # normal operation
+                # Get the moonrise time
+                unformmated = datetime.strptime(api_response["moonrise"], "%H:%M")  # get datetime object
+                moonrise = unformmated.strftime("%I:%M %p")  # convert to 12-hour
+                # Get the moonset time
+                unformmated = datetime.strptime(api_response["moonset"], "%H:%M")  # get datetime object
+                moonset = unformmated.strftime("%I:%M %p")  # convert to 12-hour
+
+                if api_response["moonrise"] < api_response["moonset"]:
+                    tweet = bot.send(f"The moon will rise at {moonrise} and set at {moonset} today in Fort Myers, Florida (EST).")
+                else:
+                    tweet = bot.send_tweet(f"The moon will set at {moonset} and rise at {moonrise} today in Fort Myers, Florida (EST).")  # normal operation
         else:
             # Get the moonrise time
             unformmated = datetime.strptime(api_response["moonrise"], "%H:%M")  # get datetime object
@@ -61,11 +71,13 @@ def main():
             # Get the moonset time
             unformmated = datetime.strptime(api_response["moonset"], "%H:%M")  # get datetime object
             moonset = unformmated.strftime("%I:%M %p")  # convert to 12-hour
-            tweet = bot.send_tweet(f"The moon is {api_response['moon_status'].lower()} today.")  # if the moon is always up or always set within the day
+            tweet = bot.send_tweet(f"The moon is {api_response['moon_status'].lower()} today in Fort Myers, Florida (EST).")  # if the moon is always up or always set within the day
 
         print(f"Tweet sent out: https://twitter.com/MoonTimesBot/status/{tweet.data['id']}")
-    except Exception as e:
+    except tweepy.errors.Forbidden as e:
         print(f"{e}: {e.response.json()['detail']}")
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":

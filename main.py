@@ -25,7 +25,7 @@ class Bot():
         )
 
     def astronomy_api_call(self) -> requests.Response:
-        return requests.get(f"https://api.ipgeolocation.io/astronomy?apiKey={self.api_key}&location=New%20York,%20US")
+        return requests.get(f"https://api.ipgeolocation.io/astronomy?apiKey={self.api_key}&location=Fort%20Myers,%20US")
 
     def send_tweet(self, message: str) -> tweepy.Response:
         """ Send a tweet with the given message """
